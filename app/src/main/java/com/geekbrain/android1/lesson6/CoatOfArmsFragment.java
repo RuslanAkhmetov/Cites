@@ -53,9 +53,8 @@ public class CoatOfArmsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        if (savedInstanceState != null) {
+            requireActivity().getSupportFragmentManager().popBackStack();
         }
     }
 
@@ -79,14 +78,11 @@ public class CoatOfArmsFragment extends Fragment {
             TypedArray images = getResources().obtainTypedArray(R.array.coat_of_arms_imgs);
             imageView.setImageResource(images.getResourceId(index, 0));
             images.recycle();
-
         }
-
 
     }
 
     public static CoatOfArmsFragment newInstance(int index){
-
         CoatOfArmsFragment fragment = new CoatOfArmsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_INDEX, index);

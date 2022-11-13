@@ -1,6 +1,8 @@
 package com.geekbrain.android1.lesson6;
 
+import android.content.res.Configuration;
 import android.graphics.Typeface;
+import android.media.VolumeShaper;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -69,10 +71,31 @@ public class CitiesFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(CITY, currentPosition);
+        super.onSaveInstanceState(outState);
+    }
+
+    private boolean isLandscape(){
+        return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
+    private static final String CITY = "city";
+    private int currentPosition = 0;
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState != null){
+            currentPosition = savedInstanceState.getInt(CITY, 0);
+        }
+
         initCitesList(view);
 
+        if (isLandscape()){
+            showLandCoatOfArms(currentPosition);
+        }
     }
 
     private void initCitesList(View view){
@@ -87,15 +110,35 @@ public class CitiesFragment extends Fragment {
             final int index = i;
             textView.setOnClickListener(v->{
                 //TODO отобразить фрагмент с гербом
+                currentPosition = index;
                 showCoatOfArms(index);
+
             });
 
         }
     }
 
-    private void showCoatOfArms(int index){
+    private void showCoatOfArms(int index) {
+        if (isLandscape()) {
+            showLandCoatOfArms(index);
+        } else {
+            showPortCoatOfArms( index);
+        }
+    }
 
+    private void showLandCoatOfArms(int index) {
         CoatOfArmsFragment coatOfArmsFragment = CoatOfArmsFragment.newInstance(index);
+
+        requireActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.coat_of_arms_container, coatOfArmsFragment)
+                .commit();
+    }
+
+    private void showPortCoatOfArms(int index){
+        CoatOfArmsFragment coatOfArmsFragment = CoatOfArmsFragment.newInstance(index);
+
         requireActivity()
                 .getSupportFragmentManager()
                 .beginTransaction()
@@ -104,6 +147,7 @@ public class CitiesFragment extends Fragment {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
 
-
     }
+
+
 }
