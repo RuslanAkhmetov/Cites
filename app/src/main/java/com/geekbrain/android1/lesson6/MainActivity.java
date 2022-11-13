@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
 
-
     }
 
     private static final String CITY = "city";
